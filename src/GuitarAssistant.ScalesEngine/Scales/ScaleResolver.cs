@@ -4,12 +4,7 @@ namespace GuitarAssistant.ScalesEngine.Scales
 {
     public class ScaleResolver
     {
-        public List<Note> GetNotes(Scale scale, Note dominant)
-        {
-            return new List<Note>();
-        }
-
-        private IScale GetScale(Scale scale)
+        public static IScale GetScale(Scale scale)
         {
             switch (scale)
             {
