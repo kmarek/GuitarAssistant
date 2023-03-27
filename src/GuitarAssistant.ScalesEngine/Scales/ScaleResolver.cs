@@ -6,13 +6,17 @@ namespace GuitarAssistant.ScalesEngine.Scales
     {
         public static IScale GetScale(Scale scale)
         {
-            switch (scale)
+            return scale switch
             {
-                case Scale.Ionian:
-                    return new IonianScale();
-                default:
-                    throw new ArgumentException("");
-            }
+                Scale.Ionian => new IonianScale(),
+                Scale.Dorian => new DorianScale(),
+                Scale.Phrygian => new PhrygianScale(),
+                Scale.Lydian => new LydianScale(),
+                Scale.Mixolydian => new MixolydianScale(),
+                Scale.Aeolian => new AeolianScale(),
+                Scale.Locrian => new LocrianScale(),
+                _ => throw new ArgumentException(""),
+            };
         }
     }
 }
