@@ -1,8 +1,7 @@
-﻿namespace GuitarAssistant.ScalesEngine.Scales
+﻿namespace GuitarAssistant.ScalesEngine.Scales;
+
+public interface IScale
 {
-    public interface IScale
-    {
-        public int NoteCount { get; }
-        public List<int> Pattern { get; }
-    }
+    public int NoteCount { get; }
+    public List<int> Pattern { get; }
 }

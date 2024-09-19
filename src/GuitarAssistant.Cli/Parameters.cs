@@ -1,10 +1,9 @@
 ﻿using GuitarAssistant.ScalesEngine.Enums;
 
-namespace GuitarAssistant.Cli
+namespace GuitarAssistant.Cli;
+
+internal class Parameters
 {
-    internal class Parameters
-    {
-        public Scale Scale { get; set; }
-        public Note Dominant { get; set; }
-    }
+    public Scale Scale { get; set; }
+    public Note Dominant { get; set; }
 }

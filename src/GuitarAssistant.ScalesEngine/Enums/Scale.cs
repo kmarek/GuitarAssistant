@@ -1,13 +1,12 @@
-﻿namespace GuitarAssistant.ScalesEngine.Enums
+﻿namespace GuitarAssistant.ScalesEngine.Enums;
+
+public enum Scale
 {
-    public enum Scale
-    {
-        Ionian,
-        Dorian,
-        Phrygian,
-        Lydian,
-        Mixolydian,
-        Aeolian,
-        Locrian
-    }
+    Ionian = 0,
+    Dorian = 1,
+    Phrygian = 2,
+    Lydian = 3,
+    Mixolydian = 4,
+    Aeolian = 5,
+    Locrian = 6
 }
