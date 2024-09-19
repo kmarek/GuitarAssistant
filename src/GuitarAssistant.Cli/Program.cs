@@ -11,6 +11,7 @@ namespace GuitarAssistant.Cli
             if (args.Length == 0)
             {
                 Console.WriteLine("HELP");
+                return;
             }
 
             var parameters = CommandParser.Parse(args);
