@@ -19,8 +19,10 @@ internal class CommandParser
 
                 bool correct = Enum.TryParse(scale, true, out Scale result);
 
-                if (correct)
-                    parameters.Scale = result;
+                if (!correct)
+                    throw new ArgumentException($"Scale {scale} is not valid");
+
+                parameters.Scale = result;
             }
 
             if (arg.Contains("-dominant"))
@@ -30,8 +32,10 @@ internal class CommandParser
 
                 bool correct = Enum.TryParse(dominant, true, out Note result);
 
-                if (correct)
-                    parameters.Dominant = result;
+                if (!correct)
+                    throw new ArgumentException($"Dominant {dominant} is not valid");
+
+                parameters.Dominant = result;
             }
         }
 

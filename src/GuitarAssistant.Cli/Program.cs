@@ -1,4 +1,5 @@
 ﻿using GuitarAssistant.ScalesEngine.Engine;
+using GuitarAssistant.ScalesEngine.Enums;
 
 namespace GuitarAssistant.Cli;
 
@@ -6,11 +7,24 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        Console.WriteLine($"Provided {args.Length} arguments.");
 
-        if (args.Length == 0)
+        if (args.Length != 2)
         {
-            Console.WriteLine("HELP");
+            Console.WriteLine(Constants.HelpMessage);
+
+            Console.WriteLine("Available scales:");
+            foreach (var scale in Enum.GetValues<Scale>())
+            {
+                Console.WriteLine($"- {scale}");
+            }
+
+            Console.WriteLine("Available dominants (notes):");
+            foreach (var note in Enum.GetValues<Note>())
+            {
+                Console.WriteLine($"- {note}");
+            }
+
             return;
         }
 
