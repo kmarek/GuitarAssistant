@@ -1,4 +1,6 @@
-﻿using GuitarAssistant.ScalesEngine.Enums;
+﻿using GuitarAssistant.Common.Services;
+using GuitarAssistant.ScalesEngine.Enums;
+using GuitarAssistant.Common.Extensions;
 
 namespace GuitarAssistant.Cli;
 
@@ -7,6 +9,7 @@ internal class CommandParser
     public static Parameters Parse(string[] args)
     {
         Console.WriteLine($"args {args.Length}");
+        var printer = new Printer(new ConsoleLogger());
 
         Parameters parameters = new();
 
@@ -20,7 +23,10 @@ internal class CommandParser
                 bool correct = Enum.TryParse(scale, true, out Scale result);
 
                 if (!correct)
-                    throw new ArgumentException($"Scale {scale} is not valid");
+                {
+                    throw new ArgumentException($"Scale {scale} is not valid, {Environment.NewLine} VALID VALUES: {Environment.NewLine} {string.Join(Environment.NewLine, Scale.Aeolian.GetAllValues())}");
+                }
+                    
 
                 parameters.Scale = result;
             }
@@ -33,7 +39,7 @@ internal class CommandParser
                 bool correct = Enum.TryParse(dominant, true, out Note result);
 
                 if (!correct)
-                    throw new ArgumentException($"Dominant {dominant} is not valid");
+                    throw new ArgumentException($"Dominant {dominant} is not valid,{Environment.NewLine} VALID VALUES: {Environment.NewLine} {string.Join(Environment.NewLine, Note.A.GetAllValues())}");
 
                 parameters.Dominant = result;
             }
