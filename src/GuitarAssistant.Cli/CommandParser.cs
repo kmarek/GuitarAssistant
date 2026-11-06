@@ -1,57 +1,59 @@
-﻿using GuitarAssistant.Common.Services;
-using GuitarAssistant.ScalesEngine.Enums;
-using GuitarAssistant.Common.Extensions;
+﻿using GuitarAssistant.ScalesEngine.Enums;
 
 namespace GuitarAssistant.Cli;
 
-internal class CommandParser
+internal static class CommandParser
 {
+    private const string ScalePrefix = "-scale=";
+    private const string RootPrefix = "-root=";
+
+    /// <exception cref="ArgumentException">Arguments are missing, duplicated, unknown or invalid.</exception>
     public static Parameters Parse(string[] args)
     {
-        Console.WriteLine($"args {args.Length}");
-        var printer = new Printer(new ConsoleLogger());
-
-        Parameters parameters = new();
+        Scale? scale = null;
+        Note? root = null;
 
         foreach (string arg in args)
         {
-            if (arg.Contains("-scale"))
+            if (arg.StartsWith(ScalePrefix, StringComparison.OrdinalIgnoreCase))
             {
-                string scale = GetValue(arg);
-                Console.WriteLine($"Scale: {scale}");
+                if (scale is not null)
+                    throw new ArgumentException("Argument -scale was given more than once.");
 
-                bool correct = Enum.TryParse(scale, true, out Scale result);
-
-                if (!correct)
-                {
-                    throw new ArgumentException($"Scale {scale} is not valid, {Environment.NewLine} VALID VALUES: {Environment.NewLine} {string.Join(Environment.NewLine, Scale.Aeolian.GetAllValues())}");
-                }
-                    
-
-                parameters.Scale = result;
+                scale = ParseName<Scale>(arg[ScalePrefix.Length..], "scale");
             }
-
-            if (arg.Contains("-dominant"))
+            else if (arg.StartsWith(RootPrefix, StringComparison.OrdinalIgnoreCase))
             {
-                string dominant = GetValue(arg);
-                Console.WriteLine($"Dominant: {dominant}");
+                if (root is not null)
+                    throw new ArgumentException("Argument -root was given more than once.");
 
-                bool correct = Enum.TryParse(dominant, true, out Note result);
-
-                if (!correct)
-                    throw new ArgumentException($"Dominant {dominant} is not valid,{Environment.NewLine} VALID VALUES: {Environment.NewLine} {string.Join(Environment.NewLine, Note.A.GetAllValues())}");
-
-                parameters.Dominant = result;
+                root = ParseName<Note>(arg[RootPrefix.Length..], "root note");
+            }
+            else
+            {
+                throw new ArgumentException($"Unknown argument '{arg}'.");
             }
         }
 
-        return parameters;
+        if (scale is null)
+            throw new ArgumentException("Missing required argument -scale.");
+
+        if (root is null)
+            throw new ArgumentException("Missing required argument -root.");
+
+        return new Parameters(scale.Value, root.Value);
     }
 
-    private static string GetValue(string arg)
+    // Accepts only exact (case-insensitive) enum names. Enum.TryParse is not used because it
+    // also accepts numbers ("9") and comma-separated combinations ("C,D").
+    private static TEnum ParseName<TEnum>(string value, string argumentName) where TEnum : struct, Enum
     {
-        var array = arg.Split("=");
+        foreach (TEnum candidate in Enum.GetValues<TEnum>())
+        {
+            if (string.Equals(candidate.ToString(), value, StringComparison.OrdinalIgnoreCase))
+                return candidate;
+        }
 
-        return array.Length > 1 ? array[1] : string.Empty;
+        throw new ArgumentException($"Value '{value}' is not a valid {argumentName}.");
     }
 }

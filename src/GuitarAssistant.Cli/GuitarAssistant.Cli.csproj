@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="GuitarAssistant.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GuitarAssistant.Common\GuitarAssistant.Common.csproj" />
     <ProjectReference Include="..\GuitarAssistant.ScalesEngine\GuitarAssistant.ScalesEngine.csproj" />
   </ItemGroup>
