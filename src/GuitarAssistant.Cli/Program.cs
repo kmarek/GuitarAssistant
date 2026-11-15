@@ -4,33 +4,47 @@ using GuitarAssistant.ScalesEngine.Enums;
 
 namespace GuitarAssistant.Cli;
 
-internal class Program
+internal static class Program
 {
-    static void Main(string[] args)
+    private static int Main(string[] args)
     {
-        Console.WriteLine($"Provided {args.Length} arguments.");
-        Printer printer = new Printer(new ConsoleLogger());
+        var printer = new Printer(new ConsoleLogger());
 
-        if (args.Length != 2)
+        if (args.Length == 0 || args.Any(a => a is "-h" or "-help" or "--help"))
         {
-            Console.WriteLine(Constants.HelpMessage);
-
-            Console.WriteLine("Available scales:");
-            printer.PrintEnumValues<Scale>();
-
-            Console.WriteLine("Available dominants (notes):");
-            printer.PrintEnumValues<Note>();
-
-            return;
+            PrintHelp(printer);
+            return 0;
         }
 
-        var parameters = CommandParser.Parse(args);
-        var notes = NotesCalculator.GetNotes(parameters.Scale, parameters.Dominant);
-
-        Console.WriteLine($"Notes for Scale {parameters.Scale}-{parameters.Dominant}");
-        notes.ForEach(note =>
+        Parameters parameters;
+        try
         {
-            Console.Write($"{note} ");
-        });
+            parameters = CommandParser.Parse(args);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            Console.Error.WriteLine();
+            PrintHelp(printer);
+            return 1;
+        }
+
+        var notes = NotesCalculator.GetNotes(parameters.Scale, parameters.Root);
+
+        Console.WriteLine($"Notes for scale {parameters.Scale} {parameters.Root}:");
+        Console.WriteLine(string.Join(" ", notes));
+        return 0;
+    }
+
+    private static void PrintHelp(Printer printer)
+    {
+        Console.WriteLine(Constants.HelpMessage);
+        Console.WriteLine();
+
+        Console.WriteLine("Available scales:");
+        printer.PrintEnumValues<Scale>();
+
+        Console.WriteLine("Available root notes:");
+        printer.PrintEnumValues<Note>();
     }
 }
